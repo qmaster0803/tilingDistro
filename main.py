@@ -39,7 +39,7 @@ while(True):
                 print("Aborted.")
                 exit()
 
-base_packages = ['test123', 'sudo', 'xorg', 'bspwm', 'sxhkd', 'rofi', 'alacritty', 'ranger', 'htop', 'zsh', 'build-essential', 'cmake', '']
+base_packages = ['sudo', 'xorg', 'bspwm', 'sxhkd', 'rofi', 'alacritty', 'ranger', 'htop', 'zsh', 'build-essential', 'cmake', 'libxkbfile-dev', 'flameshot', 'nmcli', 'net-tools', 'dunst', 'light']
 logging.info("Installing base packages...")
 drawProgressbar("Installing base packages...", 0, len(base_packages))
 for package in base_packages:
