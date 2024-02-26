@@ -159,38 +159,48 @@ os.chdir('../../')
 print("xkb-switch installed.")
 logging.info("xkb-switch installed.")
 
-subprocess.run(["ldconfig"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["/usr/sbin/ldconfig"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 subprocess.run(["chown", "--recursive", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid), "/home/"+username+"/Software"],
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 # Step 3. Configuring user account
 print("Configuring the system...")
 logging.info("Configuring the system...")
-subprocess.run(["/usr/sbun/usermod", "-aG", "sudo", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # add user to groups
-subprocess.run(["/usr/sbun/usermod", "-aG", "video", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-subprocess.run(["/usr/sbun/usermod", "-aG", "plugdev", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-subprocess.run(["/usr/sbun/usermod", "-aG", "netdev", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-subprocess.run(["/usr/sbun/usermod", "-aG", "dialout", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["/usr/sbin/usermod", "-aG", "sudo", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # add user to groups
+subprocess.run(["/usr/sbin/usermod", "-aG", "video", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["/usr/sbin/usermod", "-aG", "plugdev", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["/usr/sbin/usermod", "-aG", "netdev", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["/usr/sbin/usermod", "-aG", "dialout", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
 subprocess.run(["chsh", "-s", "/usr/bin/zsh", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)        # set zsh as default shell
 shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/zshrc"), "/home/"+username+"/.zshrc")            # copy default zsh config
 subprocess.run(["sed", "-i", "'s/<<username>>/"+username+"/g'", "/home/"+username+"/.zshrc"],
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)                                                 # paste username into zsh config
+subprocess.run(["chown", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid),
+                "/home/"+username+"/.zshrc"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)                   # set owner
+os.chmod("/home/"+username+"/.zshrc", 0o755)                                                                          # allow execution
 
-if(os.path.exists("/home/"+username+"/.config/")):
+shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/xinitrc"), "/home/"+username+"/.xinitrc")        # copy default xinitc
+subprocess.run(["chown", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid),
+                "/home/"+username+"/.xinitrc"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)                 # set owner
+os.chmod("/home/"+username+"/.xinitrc", 0o755)                                                                        # allow execution
+
+
+if(not os.path.exists("/home/"+username+"/.config/")):
         os.mkdir("/home/"+username+"/.config/")
 
-if(os.path.exists("/home/"+username+"/.config/bspwm/")): os.mkdir("/home/"+username+"/.config/bspwm/")
+if(not os.path.exists("/home/"+username+"/.config/bspwm/")): os.mkdir("/home/"+username+"/.config/bspwm/")
 shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/bspwm/bspwmrc"), "/home/"+username+"/.config/bspwm/bspwmrc") # copy bspwmrc
-os.chmod("/home/"+username+"/.config/bspwm/bspwmrc", 755)                                                                         # allow execution
+os.chmod("/home/"+username+"/.config/bspwm/bspwmrc", 0o755)                                                                       # allow execution
 
-if(os.path.exists("/home/"+username+"/.config/polybar/")): os.mkdir("/home/"+username+"/.config/polybar/")
+if(not os.path.exists("/home/"+username+"/.config/polybar/")): os.mkdir("/home/"+username+"/.config/polybar/")
 shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/polybar/config.ini"), "/home/"+username+"/.config/polybar/config.ini") # copy polybar config
 shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/polybar/launch.sh"), "/home/"+username+"/.config/polybar/launch.sh")   # copy polybar launch script
-os.chmod("/home/"+username+"/.config/polybar/launch.sh", 755)                                                                               # allow execution
+os.chmod("/home/"+username+"/.config/polybar/launch.sh", 0o755)                                                                             # allow execution
 
-if(os.path.exists("/home/"+username+"/.config/sxhkd/")): os.mkdir("/home/"+username+"/.config/sxhkd/")
+if(not os.path.exists("/home/"+username+"/.config/sxhkd/")): os.mkdir("/home/"+username+"/.config/sxhkd/")
 shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/sxhkd/sxhkdrc"), "/home/"+username+"/.config/sxhkd/sxhkdrc") # copy sxhkdrc
-os.chmod("/home/"+username+"/.config/sxhkd/sxhkdrc", 755)                                                                         # allow execution
+os.chmod("/home/"+username+"/.config/sxhkd/sxhkdrc", 0o755)                                                                       # allow execution
 
 
 subprocess.run(["chown", "--recursive", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid), "/home/"+username+"/.config"],
