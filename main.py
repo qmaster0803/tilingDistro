@@ -14,11 +14,11 @@ import time
 VERSION = "0.1"
 
 def drawProgressbar(message, value, max_value, current_name=""):
-        print('\u001b[100D', end='') # jump to the first char in line
+        print('\033[2K\033[1G', end='') # jump to the first char in line
         char_weight = max_value / 50
         filled_count = round(value/char_weight)
         empty_count = 50 - filled_count
-        print(message, '|'+('#'*filled_count)+(' '*empty_count)+'|', str(value)+'/'+str(max_value), current_name, flush=True, end='')
+        print(message, '|'+('#'*filled_count)+(' '*empty_count)+'|', str(value)+'/'+str(max_value), "["+current_name+"]", flush=True, end='')
 
 # Setup logging
 logging.basicConfig(format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO, filename="tilingDistroInstall.log")
@@ -42,9 +42,9 @@ while(True):
 base_packages = ['sudo', 'xorg', 'bspwm', 'sxhkd', 'rofi', 'alacritty', 'ranger', 'htop', 'zsh', 'build-essential', 'cmake', 'libxkbfile-dev', 'flameshot', 'network-manager', 'net-tools', 'dunst', 'light']
 logging.info("Installing base packages...")
 drawProgressbar("Installing base packages...", 0, len(base_packages), base_packages[0])
-for package in base_packages:
+for i,package in enumerate(base_packages):
         result = subprocess.run(["apt-get", "install", "-y", package], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        drawProgressbar("Installing base packages...", 1, len(base_packages), package)
+        drawProgressbar("Installing base packages...", , len(base_packages), package)
         logging.info("Installed %s", package)
         if(result.returncode != 0):
                 logging.critical(result.stderr.decode('utf-8'))
