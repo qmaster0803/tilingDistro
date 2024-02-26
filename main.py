@@ -125,7 +125,7 @@ logging.info("Polybar installed.")
 # building xkb-switch
 print("Cloning xkb-switch repo...")
 logging.info("Cloning xkb-switch repo...")
-result = subprocess.run(["git", "clone", "--recursive", "https://github.com/polybar/polybar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+result = subprocess.run(["git", "clone", "--recursive", "https://github.com/grwlf/xkb-switch"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
