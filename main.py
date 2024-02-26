@@ -83,7 +83,7 @@ os.mkdir("Software")
 os.chdir("Software")
 print("Cloning polybar repo...")
 logging.info("Cloning polybar repo...")
-result = subprocess.run(["git", "clone", "--recursive", "https://github.com/polybar/polybar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+result = subprocess.run(["git", "clone", "--recursive", "https://github.com/polybar/polybar"], stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
@@ -100,7 +100,7 @@ if(ret.returncode != 0):
         exit()
 print("Building polybar...")
 logging.info("Building polybar...")
-result = subprocess.run(["make", "-j$(nproc)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+result = subprocess.run(["make", "-j$(nproc)"], stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
