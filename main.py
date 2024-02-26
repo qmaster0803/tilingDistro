@@ -81,9 +81,9 @@ print("This may take a while, please wait...")
 
 
 os.chdir("/home/"+username+"/")
-os.mkdir("Software", exist_ok=True)
 if(not os.path.exists("Software")):
-        os.chdir("Software")
+        os.mkdir("Software")
+os.chdir("Software")
 
 # building polybar
 print("Cloning polybar repo...")
