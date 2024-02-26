@@ -79,7 +79,7 @@ print("This may take a while, please wait...")
 
 # building polybar
 os.chdir("/home/"+username+"/")
-os.mkdir("Software")
+os.mkdir("Software", exist_ok=True)
 os.chdir("Software")
 print("Cloning polybar repo...")
 logging.info("Cloning polybar repo...")
@@ -100,11 +100,19 @@ if(ret.returncode != 0):
         exit()
 print("Building polybar...")
 logging.info("Building polybar...")
-result = subprocess.run(["make", "-j$(nproc)"], stderr=subprocess.PIPE)
+result = subprocess.run(["make", "-j", str(os.cpu_count())], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+if(ret.returncode != 0):
+        print(ERR_MESSAGE)
+        logging.critical(result.stderr.decode('utf-8'))
+        exit()
+print("Installing polybar...")
+logging.info("Installing polybar...")
+result = subprocess.run(["make", "install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
         exit()
 
-print("Polybar built.")
-logging.info("Polybar built.")
+
+print("Polybar installed.")
+logging.info("Polybar installed.")
