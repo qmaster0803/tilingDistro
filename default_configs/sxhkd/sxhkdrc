@@ -1,0 +1,75 @@
+# Quit
+shift + ctrl + alt + q
+  bspc quit
+
+# Monitor brightness
+XF86MonBrightnessUp
+  exec light -A 5
+
+XF86MonBrightnessDown
+  exec light -U 5
+
+
+# Volume adjustment
+XF86AudioMute
+  pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+XF86AudioRaiseVolume
+  pactl set-sink-volume @DEFAULT_SINK@ +5%
+
+XF86AudioLowerVolume
+  pactl set-sink-volume @DEFAULT_SINK@ -5%
+
+# Monocle mode
+super + m
+  bspc desktop -l monocle
+
+super + t
+  bspc desktop -l tiled
+
+# Floating mode
+super + f
+  bspc node focused --state \~floating
+
+# Switch focused and biggest local
+super + s
+  bspc node focused --swap biggest.local
+
+# Switch window focus
+alt + Tab
+  bspc node -f next.local.\!hidden.window
+
+super + Tab
+  bspc node -f prev.local.\!hidden.window
+
+# Adjust ratio
+super + i
+  bspc node @parent --ratio -0.1
+
+super + o
+  bspc node @parent --ratio +0.1
+
+# Close window
+super + minus
+  bspc node focused.local -c
+
+# Workspace select
+super + {1-4,q,w,e,r}
+  bspc desktop -f {1-4,q,w,e,r}
+
+# Move window to workspace (silent)
+ctrl + super + {1-4,q,w,e,r}
+  bspc node -d {1-4,q,w,e,r}
+
+# Move window to workspace (violent)
+shift + super + {1-4,q,w,e,r}
+  bspc node -d {1-4,q,w,e,r} --follow
+
+# Show rofi
+super + d
+  xkb-switch -s us && \
+  rofi -modi drun,window,ssh -show
+
+# Launchers
+ctrl + alt + t
+  exec alacritty

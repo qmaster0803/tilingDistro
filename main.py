@@ -7,9 +7,11 @@
 # ----------------------------------------------------
 
 import os
+import shutil
 import subprocess
 import logging
 import time
+import pwd
 
 VERSION = "0.1"
 ERR_MESSAGE = 'Sorry, an error occured. Full log can be found in "tilingDistroInstall.log". Please contact author at qmaster080305@gmail.com.'
@@ -77,13 +79,16 @@ logging.info("Base packages installed.")
 print("This packages must be built from source: polybar, xkb-switch.")
 print("This may take a while, please wait...")
 
-# building polybar
+
 os.chdir("/home/"+username+"/")
 os.mkdir("Software", exist_ok=True)
-os.chdir("Software")
+if(not os.path.exists("Software")):
+        os.chdir("Software")
+
+# building polybar
 print("Cloning polybar repo...")
 logging.info("Cloning polybar repo...")
-result = subprocess.run(["git", "clone", "--recursive", "https://github.com/polybar/polybar"], stderr=subprocess.PIPE)
+result = subprocess.run(["git", "clone", "--recursive", "https://github.com/polybar/polybar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
@@ -98,7 +103,7 @@ if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
         exit()
-print("Building polybar...")
+print("Building polybar... (this may take a few minutes, especially on old machines)")
 logging.info("Building polybar...")
 result = subprocess.run(["make", "-j", str(os.cpu_count())], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 if(ret.returncode != 0):
@@ -113,6 +118,83 @@ if(ret.returncode != 0):
         logging.critical(result.stderr.decode('utf-8'))
         exit()
 
-
+os.chdir("../../")
 print("Polybar installed.")
 logging.info("Polybar installed.")
+
+# building xkb-switch
+print("Cloning xkb-switch repo...")
+logging.info("Cloning xkb-switch repo...")
+result = subprocess.run(["git", "clone", "--recursive", "https://github.com/polybar/polybar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+if(ret.returncode != 0):
+        print(ERR_MESSAGE)
+        logging.critical(result.stderr.decode('utf-8'))
+        exit()
+os.chdir("xkb-switch")
+print("Configuring xkb-switch...")
+logging.info("Configuring xkb-switch...")
+os.mkdir("build")
+os.chdir("build")
+result = subprocess.run(["cmake", ".."], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+if(ret.returncode != 0):
+        print(ERR_MESSAGE)
+        logging.critical(result.stderr.decode('utf-8'))
+        exit()
+print("Building xkb-switch... (this may take a few minutes, especially on old machines)")
+logging.info("Building xkb-switch...")
+result = subprocess.run(["make", "-j", str(os.cpu_count())], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+if(ret.returncode != 0):
+        print(ERR_MESSAGE)
+        logging.critical(result.stderr.decode('utf-8'))
+        exit()
+print("Installing xkb-switch...")
+logging.info("Installing xkb-switch...")
+result = subprocess.run(["make", "install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+if(ret.returncode != 0):
+        print(ERR_MESSAGE)
+        logging.critical(result.stderr.decode('utf-8'))
+        exit()
+
+os.chdir('../../')
+print("xkb-switch installed.")
+logging.info("xkb-switch installed.")
+
+subprocess.run(["ldconfig"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["chown", "--recursive", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid), "/home/"+username+"/Software"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+# Step 3. Configuring user account
+print("Configuring the system...")
+logging.info("Configuring the system...")
+subprocess.run(["/usr/sbun/usermod", "-aG", "sudo", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # add user to groups
+subprocess.run(["/usr/sbun/usermod", "-aG", "video", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["/usr/sbun/usermod", "-aG", "plugdev", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["/usr/sbun/usermod", "-aG", "netdev", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["/usr/sbun/usermod", "-aG", "dialout", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["chsh", "-s", "/usr/bin/zsh", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)        # set zsh as default shell
+shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/zshrc"), "/home/"+username+"/.zshrc")            # copy default zsh config
+subprocess.run(["sed", "-i", "'s/<<username>>/"+username+"/g'", "/home/"+username+"/.zshrc"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)                                                 # paste username into zsh config
+
+if(os.path.exists("/home/"+username+"/.config/")):
+        os.mkdir("/home/"+username+"/.config/")
+
+if(os.path.exists("/home/"+username+"/.config/bspwm/")): os.mkdir("/home/"+username+"/.config/bspwm/")
+shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/bspwm/bspwmrc"), "/home/"+username+"/.config/bspwm/bspwmrc") # copy bspwmrc
+os.chmod("/home/"+username+"/.config/bspwm/bspwmrc", 755)                                                                         # allow execution
+
+if(os.path.exists("/home/"+username+"/.config/polybar/")): os.mkdir("/home/"+username+"/.config/polybar/")
+shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/polybar/config.ini"), "/home/"+username+"/.config/polybar/config.ini") # copy polybar config
+shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/polybar/launch.sh"), "/home/"+username+"/.config/polybar/launch.sh")   # copy polybar launch script
+os.chmod("/home/"+username+"/.config/polybar/launch.sh", 755)                                                                               # allow execution
+
+if(os.path.exists("/home/"+username+"/.config/sxhkd/")): os.mkdir("/home/"+username+"/.config/sxhkd/")
+shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/sxhkd/sxhkdrc"), "/home/"+username+"/.config/sxhkd/sxhkdrc") # copy sxhkdrc
+os.chmod("/home/"+username+"/.config/sxhkd/sxhkdrc", 755)                                                                         # allow execution
+
+
+subprocess.run(["chown", "--recursive", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid), "/home/"+username+"/.config"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+print("System configuration done.")
+logging.info("System configuration done.")

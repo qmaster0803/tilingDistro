@@ -1,0 +1,14 @@
+# This is default TilingDistro config
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+bindkey -e
+
+# Next lines were added by compinstall
+zstyle :compinstall filename '/home/<<username>>/.zshrc'
+
+autoload -Uz compinit
+compinit
+
+# By default Debian has no sbin in path
+export PATH=$PATH:/usr/sbin
