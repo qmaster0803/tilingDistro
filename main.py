@@ -270,7 +270,7 @@ if("Google Chrome" in selected):
         subprocess.run(["rm", "google-chrome-stable_current_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Mozilla Firefox" in selected):
         log("Installing Mozilla Firefox...")
-        subprocess.run(["bash", "scripts/firefox-install.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "scripts/firefox-install.sh")], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("LibreOffice" in selected):
         log("Installing LibreOffice...")
         subprocess.run(["apt-get", "install", "-y", "libreoffice"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
