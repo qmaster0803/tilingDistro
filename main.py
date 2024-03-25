@@ -229,7 +229,7 @@ else:
 
 # Step 5. Configuring monitors
 result = subprocess.run(["xrandr"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-connected_monitors = re.search_all('([\w-]+) connected', result.stdout.decode('utf-8'))
+connected_monitors = re.findall('([\w-]+) connected', result.stdout.decode('utf-8'))
 
 if(len(connected_monitors) > 1):
         log("Multiple monitors found. ArandR will be launched after starting the X.")
