@@ -264,7 +264,7 @@ os.mkdir("Downloads")
 os.chdir("Downloads")
 if("Google Chrome" in selected):
         log("Installing Google Chrome...")
-        subprocess.run(["wget", '"https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["wget", "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["apt-get", "install", "-y", "./google-chrome-stable_current_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["rm", "google-chrome-stable_current_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Mozilla Firefox" in selected):
@@ -284,14 +284,14 @@ if("Inkscape" in selected):
         subprocess.run(["apt-get", "install", "-y", "inkscape"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Telegram Desktop" in selected):
         log("Installing Telegram Desktop AppImage...")
-        subprocess.run(["wget", '"https://telegram.org/dl/desktop/linux"', "-O", "telegram-desktop-latest.tar.xz"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["wget", "https://telegram.org/dl/desktop/linux", "-O", "telegram-desktop-latest.tar.xz"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["tar", "xf", "telegram-desktop-latest.tar.xz", "-C", "/home/"+username+"/Software/"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         os.chmod("/home/"+username+"/Telegram/Telegram", 0o755)
         print("Telegram installed. Please run it first time manually from ~/Software/Telegram/Telegram")
         subprocess.run(["rm", "telegram-desktop-latest.tar.xz"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Steam" in selected):
         log("Installing Steam...")
-        subprocess.run(["wget", '"https://cdn.akamai.steamstatic.com/client/installer/steam.deb"'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["wget", "https://cdn.akamai.steamstatic.com/client/installer/steam.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["apt-get", "install", "-y", "./steam.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["rm", "steam.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("OBS" in selected):
@@ -299,6 +299,6 @@ if("OBS" in selected):
         subprocess.run(["apt-get", "install", "-y", "ffmpeg", "obs-studio"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Discord" in selected):
         log("Installing Discord...")
-        subprocess.run(["wget", '"https://discord.com/api/download?platform=linux&format=deb"', "-O", "discord.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["wget", "https://discord.com/api/download?platform=linux&format=deb", "-O", "discord.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["apt-get", "install", "-y", "./discord.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["rm", "discord.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
