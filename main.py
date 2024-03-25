@@ -208,7 +208,7 @@ log("System configuration done.")
 # Step 4. Checking NVIDIA GPU and installing driver if needed
 log("Checking NVIDIA GPU available...")
 result = subprocess.run(["nvidia-detect"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-if(result.decode('utf-8').startswith('No NVIDIA GPU detected.')):
+if(result.stdout.decode('utf-8').startswith('No NVIDIA GPU detected.')):
         log("No NVIDIA GPU detected, skipping.")
 else:
         log("NVIDIA GPU detected.")
