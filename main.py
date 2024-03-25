@@ -283,11 +283,11 @@ if("GIMP" in selected):
 if("Inkscape" in selected):
         log("Installing Inkscape...")
         subprocess.run(["apt-get", "install", "-y", "inkscape"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-if("Telegram Desktop" in selected):
+if("Telegram Desktop AppImage" in selected):
         log("Installing Telegram Desktop AppImage...")
         subprocess.run(["wget", "https://telegram.org/dl/desktop/linux", "-O", "telegram-desktop-latest.tar.xz"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["tar", "xf", "telegram-desktop-latest.tar.xz", "-C", "/home/"+username+"/Software/"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        os.chmod("/home/"+username+"/Telegram/Telegram", 0o755)
+        os.chmod("/home/"+username+"/Software/Telegram/Telegram", 0o755)
         print("Telegram installed. Please run it first time manually from ~/Software/Telegram/Telegram")
         subprocess.run(["rm", "telegram-desktop-latest.tar.xz"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Steam" in selected):
