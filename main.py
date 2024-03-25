@@ -12,6 +12,8 @@ import subprocess
 import logging
 import time
 import pwd
+import re
+import sys
 
 VERSION = "0.1"
 ERR_MESSAGE = 'Sorry, an error occured. Full log can be found in "tilingDistroInstall.log". Please contact author at qmaster080305@gmail.com.'
@@ -23,6 +25,16 @@ def drawProgressbar(message, value, max_value, current_name="", size=30):
         empty_count = size - filled_count
         print(message, '|'+('#'*filled_count)+(' '*empty_count)+'|', str(value)+'/'+str(max_value), "["+current_name+"]", flush=True, end='')
 
+# levels:
+LOGLEVEL_INFO = 0
+LOGLEVEL_WARN = 1
+LOGLEVEL_CRIT = 2
+def log(message, level=LOGLEVEL_INFO):
+        print(message)
+        if(level == LOGLEVEL_INFO):   logging.info(message)
+        elif(level == LOGLEVEL_WARN): logging.warn(message)
+        else:                         logging.critical(message)
+
 # Setup logging
 logging.basicConfig(format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO, filename="tilingDistroInstall.log")
 
@@ -31,19 +43,15 @@ if(os.geteuid() != 0):
         print("This script must be run as root!")
         exit()
 else:
-        print("TilingDistro v"+VERSION+" install script.")
-        logging.info("TilingDistro Installer v%s", VERSION)
+        log("TilingDistro v"+VERSION+" install script.")
 
-print("Checking network connection...")
-logging.info("Checking network connection...")
+log("Checking network connection...")
 ret = subprocess.run(["ping", "-c", "4", "google.com"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if(ret.returncode != 0):
-        print("This script requires an internet connection.")
-        logging.critical("No network detected.")
+        log("This script requires an internet connection.", LOGLEVEL_CRITICAL)
         exit()
 else:
-        print("Connection OK.")
-        logging.info("Connection OK.")
+        log("Connection OK.")
 
 username = input("Please enter your username (not root): ")
 logging.info("Username entered: %s.", username)
@@ -60,7 +68,7 @@ base_packages = ['sudo', 'xorg', 'bspwm', 'sxhkd', 'rofi', 'alacritty', 'ranger'
                  'build-essential', 'cmake', 'libxkbfile-dev', 'flameshot', 'network-manager', 'net-tools', 'dunst', 'light', 'git', 'cmake-data', 'pkg-config', 'python3-sphinx',
                  'python3-packaging', 'libuv1-dev', 'libcairo2-dev', 'libxcb1-dev', 'libxcb-util0-dev', 'libxcb-randr0-dev', 'libxcb-composite0-dev', 'python3-xcbgen', 'xcb-proto',
                  'libxcb-image0-dev', 'libxcb-ewmh-dev', 'libxcb-icccm4-dev', 'libxcb-xkb-dev', 'libxcb-xrm-dev', 'libxcb-cursor-dev', 'libasound2-dev', 'libpulse-dev',
-                 'libmpdclient-dev', 'libnl-genl-3-dev']
+                 'libmpdclient-dev', 'libnl-genl-3-dev', 'nvidia-detect', 'python3-pip']
 
 logging.info("Installing base packages...")
 for i,package in enumerate(base_packages):
@@ -86,16 +94,14 @@ if(not os.path.exists("Software")):
 os.chdir("Software")
 
 # building polybar
-print("Cloning polybar repo...")
-logging.info("Cloning polybar repo...")
+log("Cloning polybar repo...")
 result = subprocess.run(["git", "clone", "--recursive", "https://github.com/polybar/polybar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
         exit()
 os.chdir("polybar")
-print("Configuring polybar...")
-logging.info("Configuring polybar...")
+log("Configuring polybar...")
 os.mkdir("build")
 os.chdir("build")
 result = subprocess.run(["cmake", ".."], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -103,15 +109,13 @@ if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
         exit()
-print("Building polybar... (this may take a few minutes, especially on old machines)")
-logging.info("Building polybar...")
+log("Building polybar... (this may take a few minutes, especially on old machines)")
 result = subprocess.run(["make", "-j", str(os.cpu_count())], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
         exit()
-print("Installing polybar...")
-logging.info("Installing polybar...")
+log("Installing polybar...")
 result = subprocess.run(["make", "install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
@@ -119,20 +123,17 @@ if(ret.returncode != 0):
         exit()
 
 os.chdir("../../")
-print("Polybar installed.")
-logging.info("Polybar installed.")
+log("Polybar installed.")
 
 # building xkb-switch
-print("Cloning xkb-switch repo...")
-logging.info("Cloning xkb-switch repo...")
+log("Cloning xkb-switch repo...")
 result = subprocess.run(["git", "clone", "--recursive", "https://github.com/grwlf/xkb-switch"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
         exit()
 os.chdir("xkb-switch")
-print("Configuring xkb-switch...")
-logging.info("Configuring xkb-switch...")
+log("Configuring xkb-switch...")
 os.mkdir("build")
 os.chdir("build")
 result = subprocess.run(["cmake", ".."], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -140,15 +141,13 @@ if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
         exit()
-print("Building xkb-switch... (this may take a few minutes, especially on old machines)")
-logging.info("Building xkb-switch...")
+log("Building xkb-switch... (this may take a few minutes, especially on old machines)")
 result = subprocess.run(["make", "-j", str(os.cpu_count())], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
         logging.critical(result.stderr.decode('utf-8'))
         exit()
-print("Installing xkb-switch...")
-logging.info("Installing xkb-switch...")
+log("Installing xkb-switch...")
 result = subprocess.run(["make", "install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 if(ret.returncode != 0):
         print(ERR_MESSAGE)
@@ -156,16 +155,14 @@ if(ret.returncode != 0):
         exit()
 
 os.chdir('../../')
-print("xkb-switch installed.")
-logging.info("xkb-switch installed.")
+log("xkb-switch installed.")
 
 subprocess.run(["/usr/sbin/ldconfig"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 subprocess.run(["chown", "--recursive", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid), "/home/"+username+"/Software"],
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 # Step 3. Configuring user account
-print("Configuring the system...")
-logging.info("Configuring the system...")
+log("Configuring the system...")
 subprocess.run(["/usr/sbin/usermod", "-aG", "sudo", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # add user to groups
 subprocess.run(["/usr/sbin/usermod", "-aG", "video", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 subprocess.run(["/usr/sbin/usermod", "-aG", "plugdev", username], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -206,5 +203,102 @@ os.chmod("/home/"+username+"/.config/sxhkd/sxhkdrc", 0o755)                     
 subprocess.run(["chown", "--recursive", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid), "/home/"+username+"/.config"],
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-print("System configuration done.")
-logging.info("System configuration done.")
+log("System configuration done.")
+
+# Step 4. Checking NVIDIA GPU and installing driver if needed
+log("Checking NVIDIA GPU available...")
+result = subprocess.run(["nvidia-detect"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+if(result.decode('utf-8').startswith('No NVIDIA GPU detected.')):
+        log("No NVIDIA GPU detected, skipping.")
+else:
+        log("NVIDIA GPU detected.")
+        install = True
+        while(True):
+                answer = input("Do you want to install nvidia-driver? [Y/n] ")
+                if(answer.lower() in ['', 'y']): break
+                else:
+                        install = False
+                        break
+        if(install):
+                package_name = re.search("It is recommended to install the\n(?: *)?([\w-]*)(?: *)?\npackage.", result.stdout.decode('utf-8')).group(1)
+                log("Installing "+package_name+" package...")
+                result = subprocess.run(["apt-get", "install", "-y", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                if(result.returncode != 0):
+                        log(ERR_MESSAGE, LOGLEVEL_CRITICAL)
+                        exit()
+
+# Step 5. Configuring monitors
+result = subprocess.run(["xrandr"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+connected_monitors = re.search_all('([\w-]+) connected', result.stdout.decode('utf-8'))
+
+if(len(connected_monitors) > 1):
+        log("Multiple monitors found. ArandR will be launched after starting the X.")
+        dynamic_monitors = True
+        while(True):
+                answer = input("Is this monitor configuration dynamic (will you disconnect monitor(s) from time to time or not?) ? [Y/n] ")
+                if(answer.lower() in ['', 'y']): break
+                else:
+                        install = False
+                        break
+        if(dynamic_monitors):
+                #<TODO> Install script
+                pass
+
+#<TODO> workspaces config
+
+# Step 6. Installing additional software
+subprocess.run([sys.executable, "-m", "pip", "install", "pick", "--break-system-packages"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+import pick
+
+additional_packages = ["Google Chrome", "Mozilla Firefox", "LibreOffice", "VLC Media Player", "GIMP", "Inkscape",
+                        "Telegram Desktop AppImage", "Steam", "OBS", "Discord", "Flatpak", "Helvum",
+                        "Transmission", "Gnome text editor", "Sublime text 3", "Sublime text 4",
+                        "Helix", "Emacs", "Vim", "NeoVim"]
+
+selected = [i[0] for i in pick.pick(additional_packages, "Select additional software that you want to install:", multiselect=True)]
+
+
+os.chdir("/home/"+username)
+os.mkdir("Downloads")
+os.chdir("Downloads")
+if("Google Chrome" in selected):
+        log("Installing Google Chrome...")
+        subprocess.run(["wget", '"https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["apt-get", "install", "-y", "./google-chrome-stable_current_amd64.deb"]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["rm", "google-chrome-stable_current_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Mozilla Firefox" in selected):
+        log("Installing Mozilla Firefox...")
+        subprocess.run(["bash", "scripts/firefox-install.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("LibreOffice" in selected):
+        log("Installing LibreOffice...")
+        subprocess.run(["apt-get", "install", "-y", "libreoffice"]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("VLC Media Player" in selected):
+        log("Installing VLC Media Player...")
+        subprocess.run(["apt-get", "install", "-y", "vlc"]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("GIMP" in selected):
+        log("Installing GIMP...")
+        subprocess.run(["apt-get", "install", "-y", "gimp"]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Inkscape" in selected):
+        log("Installing Inkscape...")
+        subprocess.run(["apt-get", "install", "-y", "inkscape"]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Telegram Desktop" in selected):
+        log("Installing Telegram Desktop AppImage...")
+        subprocess.run(["wget", '"https://telegram.org/dl/desktop/linux"', "-O", "telegram-desktop-latest.tar.xz"]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["tar", "xf", "telegram-desktop-latest.tar.xz", "-C", "/home/"+username+"/Software/"])
+        os.chmod("/home/"+username+"/Telegram/Telegram", 0o755)
+        print("Telegram installed. Please run it first time manually from ~/Software/Telegram/Telegram")
+        subprocess.run(["rm", "telegram-desktop-latest.tar.xz"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Steam" in selected):
+        log("Installing Steam...")
+        subprocess.run(["wget", '"https://cdn.akamai.steamstatic.com/client/installer/steam.deb"']), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["apt-get", "install", "-y", "./steam.deb"]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["rm", "steam.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("OBS" in selected):
+        log("Installing OBS...")
+        subprocess.run(["apt-get", "install", "-y", "ffmpeg", "obs-studio"]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Discord" in selected):
+        log("Installing Discord...")
+        subprocess.run(["wget", '"https://discord.com/api/download?platform=linux&format=deb"', "-O", "discord.deb"]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["apt-get", "install", "-y", "./discord.deb"]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["rm", "discord.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
