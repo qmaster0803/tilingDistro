@@ -260,7 +260,8 @@ selected = [i[0] for i in pick.pick(additional_packages, "Select additional soft
 
 
 os.chdir("/home/"+username)
-os.mkdir("Downloads")
+if(not os.path.exists("Downloads")):
+        os.mkdir("Downloads")
 os.chdir("Downloads")
 if("Google Chrome" in selected):
         log("Installing Google Chrome...")
