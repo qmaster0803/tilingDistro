@@ -64,6 +64,14 @@ while(True):
                 print("Aborted.")
                 exit()
 
+# Add contrib non-free repo to /etc/apt/sources.list
+with open("/etc/os-release") as file:
+        codename = ist(filter(lambda x: x.startswith("VERSION_CODENAME"), file.read().split('\n')))[0].split("=")[1]
+
+with open("/etc/apt/sources.list", "a") as file:
+        file.write("deb http://deb.debian.org/debian/ "+codename+" contrib non-free")
+        file.write("deb-src http://deb.debian.org/debian/ "+codename+" contrib non-free")
+        
 base_packages = ['sudo', 'xorg', 'bspwm', 'sxhkd', 'rofi', 'alacritty', 'ranger', 'htop', 'zsh', 'pipewire', 'wireplumber', 'pipewire-audio', 'pipewire-pulse', 'pipewire-alsa',
                  'build-essential', 'cmake', 'libxkbfile-dev', 'flameshot', 'network-manager', 'net-tools', 'dunst', 'light', 'git', 'cmake-data', 'pkg-config', 'python3-sphinx',
                  'python3-packaging', 'libuv1-dev', 'libcairo2-dev', 'libxcb1-dev', 'libxcb-util0-dev', 'libxcb-randr0-dev', 'libxcb-composite0-dev', 'python3-xcbgen', 'xcb-proto',
@@ -194,6 +202,15 @@ if(not os.path.exists("/home/"+username+"/.config/polybar/")): os.mkdir("/home/"
 shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/polybar/config.ini"), "/home/"+username+"/.config/polybar/config.ini") # copy polybar config
 shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/polybar/launch.sh"), "/home/"+username+"/.config/polybar/launch.sh")   # copy polybar launch script
 os.chmod("/home/"+username+"/.config/polybar/launch.sh", 0o755)                                                                             # allow execution
+
+with open("/home/"+username+"/.config/polybar/battery_name", "w") as file:
+        file.write(list(filter(lambda x: x.startswith('BAT'), os.listdir("/sys/class/power_supply/")))[0])
+
+with open("/home/"+username+"/.config/polybar/adapter_name", "w") as file:
+        file.write(list(filter(lambda x: x.startswith('AC'), os.listdir("/sys/class/power_supply/")))[0])
+        
+with open("/home/"+username+"/.config/polybar/bl_name", "w") as file:
+        file.write(os.listdir("/sys/class/backlight/")[0])
 
 if(not os.path.exists("/home/"+username+"/.config/sxhkd/")): os.mkdir("/home/"+username+"/.config/sxhkd/")
 shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/sxhkd/sxhkdrc"), "/home/"+username+"/.config/sxhkd/sxhkdrc") # copy sxhkdrc
