@@ -69,9 +69,11 @@ with open("/etc/os-release") as file:
         codename = list(filter(lambda x: x.startswith("VERSION_CODENAME"), file.read().split('\n')))[0].split("=")[1]
 
 with open("/etc/apt/sources.list", "a") as file:
-        file.write("deb http://deb.debian.org/debian/ "+codename+" contrib non-free")
-        file.write("deb-src http://deb.debian.org/debian/ "+codename+" contrib non-free")
+        file.write("deb http://deb.debian.org/debian/ "+codename+" contrib non-free\n")
+        file.write("deb-src http://deb.debian.org/debian/ "+codename+" contrib non-free\n")
         
+subprocess.run(["apt-get", "update"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
 base_packages = ['sudo', 'xorg', 'bspwm', 'sxhkd', 'rofi', 'alacritty', 'ranger', 'htop', 'zsh', 'pipewire', 'wireplumber', 'pipewire-audio', 'pipewire-pulse', 'pipewire-alsa',
                  'build-essential', 'cmake', 'libxkbfile-dev', 'flameshot', 'network-manager', 'net-tools', 'dunst', 'light', 'git', 'cmake-data', 'pkg-config', 'python3-sphinx',
                  'python3-packaging', 'libuv1-dev', 'libcairo2-dev', 'libxcb1-dev', 'libxcb-util0-dev', 'libxcb-randr0-dev', 'libxcb-composite0-dev', 'python3-xcbgen', 'xcb-proto',
