@@ -66,7 +66,7 @@ while(True):
 
 # Add contrib non-free repo to /etc/apt/sources.list
 with open("/etc/os-release") as file:
-        codename = ist(filter(lambda x: x.startswith("VERSION_CODENAME"), file.read().split('\n')))[0].split("=")[1]
+        codename = list(filter(lambda x: x.startswith("VERSION_CODENAME"), file.read().split('\n')))[0].split("=")[1]
 
 with open("/etc/apt/sources.list", "a") as file:
         file.write("deb http://deb.debian.org/debian/ "+codename+" contrib non-free")
@@ -90,6 +90,8 @@ for i,package in enumerate(base_packages):
                 exit()
 print() # to reset progressbar
 logging.info("Base packages installed.")
+
+# Removing xterm
 
 # Step 2. Building some packages from source
 print("This packages must be built from source: polybar, xkb-switch.")

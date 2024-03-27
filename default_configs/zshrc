@@ -12,3 +12,9 @@ compinit
 
 # By default Debian has no sbin in path
 export PATH=$PATH:/usr/sbin
+
+# Custom arrow-like prompt
+export PROMPT='%~  '
+
+# Alias for adding all available ssh keys
+alias ssh-unlock="eval \"$(ssh-agent -s)\" && ssh-add ~/.ssh/*.priv"
