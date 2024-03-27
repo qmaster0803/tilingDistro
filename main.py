@@ -252,13 +252,14 @@ subprocess.run([sys.executable, "-m", "pip", "install", "pick", "--break-system-
 import pick
 
 additional_packages = ["Google Chrome", "Mozilla Firefox", "LibreOffice", "VLC Media Player", "GIMP", "Inkscape",
-                        "Telegram Desktop AppImage", "Steam", "OBS", "Discord", "Flatpak", "Helvum",
+                        "Telegram Desktop AppImage", "Aria2", "Steam", "OBS", "Discord", "Flatpak", "Helvum",
                         "Transmission", "Gnome text editor", "Sublime text 3", "Sublime text 4",
                         "Helix", "Emacs", "Vim", "NeoVim"]
 
 selected = [i[0] for i in pick.pick(additional_packages, "Select additional software that you want to install:", multiselect=True)]
 
-
+if("Helvum" in seleced): selected.append("Flatpak")
+        
 os.chdir("/home/"+username)
 if(not os.path.exists("Downloads")):
         os.mkdir("Downloads")
@@ -290,6 +291,9 @@ if("Telegram Desktop AppImage" in selected):
         os.chmod("/home/"+username+"/Software/Telegram/Telegram", 0o755)
         print("Telegram installed. Please run it first time manually from ~/Software/Telegram/Telegram")
         subprocess.run(["rm", "telegram-desktop-latest.tar.xz"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Aria2" in selected):
+        log("Installing Transmission...")
+        subprocess.run(["apt-get", "install", "-y", "aria2"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Steam" in selected):
         log("Installing Steam...")
         subprocess.run(["wget", "https://cdn.akamai.steamstatic.com/client/installer/steam.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -303,3 +307,57 @@ if("Discord" in selected):
         subprocess.run(["wget", "https://discord.com/api/download?platform=linux&format=deb", "-O", "discord.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["apt-get", "install", "-y", "./discord.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["rm", "discord.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Flatpak" in selected):
+        log("Installing Flatpak...")
+        subprocess.run(["apt-get", "install", "-y", "flatpak"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["flatpak", "remote-add", "--if-not-exists", "flathub", "https://dl.flathub.org/repo/flathub.flatpakrepo"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Helvum" in selected):
+        log("Installing Helvum...")
+        subprocess.run(["flatpak", "install", "flathub", "org.pipewire.Helvum"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Transmission" in selected):
+        log("Installing Transmission...")
+        subprocess.run(["apt-get", "install", "-y", "transmission-gtk"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Gnome text editor" in selected):
+        log("Installing Gnome text editor...")
+        subprocess.run(["apt-get", "install", "-y", "gedit"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Sublime text 3" in selected):
+        log("Installing Sublime text 3...")
+        subprocess.run(["wget", "https://download.sublimetext.com/sublime-text_build-3211_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["apt-get", "install", "-y", "sublime-text_build-3211_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["rm", "sublime-text_build-3211_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Sublime text 4" in selected):
+        log("Installing Sublime text 4...")
+        subprocess.run(["wget", "https://download.sublimetext.com/sublime-text_build-4169_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["apt-get", "install", "-y", "sublime-text_build-4169_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["rm", "sublime-text_build-4169_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Helix" in selected):
+        log("Building Helix...")
+        log("Installing Rust")
+        subprocess.run(["apt-get", "install", "-y", "git", "python3-pylsp", "clangd"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["wget", "https://sh.rustup.rs", "-O", "rustup.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["bash", "rustup.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["rm", "rustup.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        log("Cloning Helix repo...")
+        os.chdir("/home/"+username+"/Software")
+        subprocess.run(["git", "clone", "https://github.com/helix-editor/helix"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        os.chdir("helix")
+        log("Building Helix... (this may take a while, especially on old machines)")
+        subprocess.run(["cargo", "install", "--path", "helix_term", "--locked"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        log("Fetching helix grammars...")
+        subprocess.run(["hx", "--grammar", "fetch"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        log("Building helix grammars...")
+        subprocess.run(["hx", "--grammar", "build"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["hx", "--grammar", "fetch"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["chown", "--recursive", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid), "/home/"+username+"/Software/helix"],
+                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("Emacs" in selected):
+        log("Installing emacs...")
+        subprocess.run(["apt-get", "install", "-y", "emacs"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if("NeoVim" in selected):
+        log("Installing NeoVim...")
+        subprocess.run(["apt-get", "install", "-y", "neovim"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if("Vim" in selected):
+                log("Unable to install Vim and NeoVim simultaneously, skipping Vim", level=LOGLEVEL_WARN)
+if("Vim" in selected and "NeoVim" not in selected):
+        log("Installing Vim...")
+        subprocess.run(["apt-get", "install", "-y", "vim"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
