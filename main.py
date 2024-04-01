@@ -365,7 +365,7 @@ if("Helix" in selected):
         log("Installing Rust")
         subprocess.run(["apt-get", "install", "-y", "git", "python3-pylsp", "clangd"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["wget", "https://sh.rustup.rs", "-O", "rustup.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.run(["bash", "rustup.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["bash", "rustup.sh", "-y"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["rm", "rustup.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         log("Cloning Helix repo...")
         os.chdir("/home/"+username+"/Software")
