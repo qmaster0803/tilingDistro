@@ -207,11 +207,17 @@ shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/polybar/con
 shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/polybar/launch.sh"), "/home/"+username+"/.config/polybar/launch.sh")   # copy polybar launch script
 os.chmod("/home/"+username+"/.config/polybar/launch.sh", 0o755)                                                                             # allow execution
 
+skip = False
 with open("/home/"+username+"/.config/polybar/battery_name", "w") as file:
-        file.write(list(filter(lambda x: x.startswith('BAT'), os.listdir("/sys/class/power_supply/")))[0])
+        try:
+                file.write(list(filter(lambda x: x.startswith('BAT'), os.listdir("/sys/class/power_supply/")))[0])
+        except IndexError:
+                skip = True
+                log("No battery found!", loglevel=LOGLEVEL_WARN)
 
-with open("/home/"+username+"/.config/polybar/adapter_name", "w") as file:
-        file.write(list(filter(lambda x: x.startswith('AC'), os.listdir("/sys/class/power_supply/")))[0])
+if(not skip):
+        with open("/home/"+username+"/.config/polybar/adapter_name", "w") as file:
+                file.write(list(filter(lambda x: x.startswith('AC'), os.listdir("/sys/class/power_supply/")))[0])
         
 with open("/home/"+username+"/.config/polybar/bl_name", "w") as file:
         file.write(os.listdir("/sys/class/backlight/")[0])
