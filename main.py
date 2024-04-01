@@ -372,7 +372,7 @@ if("Helix" in selected):
         subprocess.run(["git", "clone", "https://github.com/helix-editor/helix"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         os.chdir("helix")
         log("Building Helix... (this may take a while, especially on old machines)")
-        subprocess.run(["cargo", "install", "--path", "helix_term", "--locked"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["cargo", "install", "--path", "helix-term", "--locked"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         log("Fetching helix grammars...")
         subprocess.run(["hx", "--grammar", "fetch"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         log("Building helix grammars...")
