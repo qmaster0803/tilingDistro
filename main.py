@@ -48,7 +48,7 @@ else:
 log("Checking network connection...")
 ret = subprocess.run(["ping", "-c", "4", "google.com"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if(ret.returncode != 0):
-        log("This script requires an internet connection.", LOGLEVEL_CRITICAL)
+        log("This script requires an internet connection.", level=LOGLEVEL_CRITICAL)
         exit()
 else:
         log("Connection OK.")
@@ -213,7 +213,7 @@ with open("/home/"+username+"/.config/polybar/battery_name", "w") as file:
                 file.write(list(filter(lambda x: x.startswith('BAT'), os.listdir("/sys/class/power_supply/")))[0])
         except IndexError:
                 skip = True
-                log("No battery found!", loglevel=LOGLEVEL_WARN)
+                log("No battery found!", level=LOGLEVEL_WARN)
 
 if(not skip):
         with open("/home/"+username+"/.config/polybar/adapter_name", "w") as file:
@@ -251,7 +251,7 @@ else:
                 log("Installing "+package_name+" package...")
                 result = subprocess.run(["apt-get", "install", "-y", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 if(result.returncode != 0):
-                        log(ERR_MESSAGE, LOGLEVEL_CRITICAL)
+                        log(ERR_MESSAGE, level=LOGLEVEL_CRITICAL)
                         exit()
 
 # Step 5. Configuring monitors
@@ -388,3 +388,6 @@ if("NeoVim" in selected):
 if("Vim" in selected and "NeoVim" not in selected):
         log("Installing Vim...")
         subprocess.run(["apt-get", "install", "-y", "vim"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+# Step 7. Configuring sudo w/o password
+
