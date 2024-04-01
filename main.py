@@ -220,7 +220,10 @@ if(not skip):
                 file.write(list(filter(lambda x: x.startswith('AC'), os.listdir("/sys/class/power_supply/")))[0])
         
 with open("/home/"+username+"/.config/polybar/bl_name", "w") as file:
-        file.write(os.listdir("/sys/class/backlight/")[0])
+        try:
+                file.write(os.listdir("/sys/class/backlight/")[0])
+        except IndexError:
+                log("No backlight found!", level=LOGLEVEL_WARN)
 
 if(not os.path.exists("/home/"+username+"/.config/sxhkd/")): os.mkdir("/home/"+username+"/.config/sxhkd/")
 shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/sxhkd/sxhkdrc"), "/home/"+username+"/.config/sxhkd/sxhkdrc") # copy sxhkdrc
@@ -390,4 +393,6 @@ if("Vim" in selected and "NeoVim" not in selected):
         subprocess.run(["apt-get", "install", "-y", "vim"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 # Step 7. Configuring sudo w/o password
-
+answer = input("Do you want to disable password for sudo? [Y/n] ")
+if(answer.lower() in ['', 'y']):
+        subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "scripts/sudo-nopasswd.sh")], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
