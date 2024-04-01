@@ -363,7 +363,7 @@ if("Sublime text 4" in selected):
 if("Helix" in selected):
         log("Building Helix...")
         log("Installing Rust")
-        subprocess.run(["apt-get", "install", "-y", "git", "python3-pylsp", "clangd", "rustup", "cargo"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["apt-get", "install", "-y", "git", "python3-pylsp", "clangd", "rustc", "cargo"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         #subprocess.run(["wget", "https://sh.rustup.rs", "-O", "rustup.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         #subprocess.run(["bash", "rustup.sh", "-y"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         #subprocess.run(["rm", "rustup.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
