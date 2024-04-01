@@ -288,7 +288,7 @@ additional_packages = ["Google Chrome", "Mozilla Firefox", "LibreOffice", "VLC M
 
 selected = [i[0] for i in pick.pick(additional_packages, "Select additional software that you want to install:", multiselect=True)]
 
-if("Helvum" in seleced): selected.append("Flatpak")
+if("Helvum" in selected): selected.append("Flatpak")
         
 os.chdir("/home/"+username)
 if(not os.path.exists("Downloads")):
