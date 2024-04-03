@@ -361,23 +361,13 @@ if("Sublime text 4" in selected):
         subprocess.run(["apt-get", "install", "-y", "sublime-text_build-4169_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["rm", "sublime-text_build-4169_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Helix" in selected):
-        log("Building Helix...")
-        log("Installing Rust")
+        log("Building and installing Helix... (This may take a while)")
         os.chdir("/home/"+username+"/Software")
         subprocess.run(["apt-get", "install", "-y", "git", "python3-pylsp", "clangd"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.run(["/usr/sbin/runuser", "-l", username, "wget", "https://sh.rustup.rs", "-O", "rustup.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.run(["/usr/sbin/runuser", "-l", username, "bash", "rustup.sh", "-y"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.run(["rm", "rustup.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        log("Cloning Helix repo...")
-        subprocess.run(["git", "clone", "https://github.com/helix-editor/helix"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        os.chdir("helix")
-        log("Building Helix... (this may take a while, especially on old machines)")
-        subprocess.run(["cargo", "install", "--path", "helix-term", "--locked"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        log("Fetching helix grammars...")
-        subprocess.run(["hx", "--grammar", "fetch"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        log("Building helix grammars...")
-        subprocess.run(["hx", "--grammar", "build"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.run(["hx", "--grammar", "fetch"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        shutil.copy(os.path.join(os.path.dirname(__file__), "scripts/install-helix.sh"), "/home/"+username+"/Software/install-helix.sh")
+        os.chmod("/home/"+username+"/Software/install-helix.sh", 0o777)                                                                          # allow execution
+        subprocess.run(["/usr/sbin/runuser", "-u", username, "bash", "install-helix.py"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["rm", "install-helix.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["chown", "--recursive", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid), "/home/"+username+"/Software/helix"],
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Emacs" in selected):
