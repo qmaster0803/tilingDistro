@@ -68,9 +68,14 @@ while(True):
 with open("/etc/os-release") as file:
         codename = list(filter(lambda x: x.startswith("VERSION_CODENAME"), file.read().split('\n')))[0].split("=")[1]
 
-with open("/etc/apt/sources.list", "a") as file:
-        file.write("deb http://deb.debian.org/debian/ "+codename+" contrib non-free\n")
-        file.write("deb-src http://deb.debian.org/debian/ "+codename+" contrib non-free\n")
+
+with open("/etc/apt/sources.list") as file:
+        already_added = (file.read().find(codename+" contrib non-free") != -1)
+
+if(not already_added):
+        with open("/etc/apt/sources.list", "a") as file:
+                file.write("deb http://deb.debian.org/debian/ "+codename+" contrib non-free\n")
+                file.write("deb-src http://deb.debian.org/debian/ "+codename+" contrib non-free\n")
         
 subprocess.run(["apt-get", "update"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -78,7 +83,7 @@ base_packages = ['sudo', 'xorg', 'bspwm', 'sxhkd', 'rofi', 'alacritty', 'ranger'
                  'build-essential', 'cmake', 'libxkbfile-dev', 'flameshot', 'network-manager', 'net-tools', 'dunst', 'light', 'git', 'cmake-data', 'pkg-config', 'python3-sphinx',
                  'python3-packaging', 'libuv1-dev', 'libcairo2-dev', 'libxcb1-dev', 'libxcb-util0-dev', 'libxcb-randr0-dev', 'libxcb-composite0-dev', 'python3-xcbgen', 'xcb-proto',
                  'libxcb-image0-dev', 'libxcb-ewmh-dev', 'libxcb-icccm4-dev', 'libxcb-xkb-dev', 'libxcb-xrm-dev', 'libxcb-cursor-dev', 'libasound2-dev', 'libpulse-dev',
-                 'libmpdclient-dev', 'libnl-genl-3-dev', 'nvidia-detect', 'python3-pip', 'libnotify-bin']
+                 'libmpdclient-dev', 'libnl-genl-3-dev', 'nvidia-detect', 'python3-pip', 'libnotify-bin', 'fonts-font-awesome']
 
 logging.info("Installing base packages...")
 for i,package in enumerate(base_packages):
@@ -366,7 +371,7 @@ if("Helix" in selected):
         subprocess.run(["apt-get", "install", "-y", "git", "python3-pylsp", "clangd"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         shutil.copy(os.path.join(os.path.dirname(__file__), "scripts/install-helix.sh"), "/home/"+username+"/Software/install-helix.sh")
         os.chmod("/home/"+username+"/Software/install-helix.sh", 0o777)                                                                          # allow execution
-        subprocess.run(["/usr/sbin/runuser", "-u", username, "bash", "install-helix.py"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["/usr/sbin/runuser", "-u", username, "zsh", "install-helix.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["rm", "install-helix.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["chown", "--recursive", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid), "/home/"+username+"/Software/helix"],
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -386,3 +391,9 @@ if("Vim" in selected and "NeoVim" not in selected):
 answer = input("Do you want to disable password for sudo? [Y/n] ")
 if(answer.lower() in ['', 'y']):
         subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "scripts/sudo-nopasswd.sh")], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+# Step 8. Saving distro data and post-clean
+with open("/root/.tilingDistro", "w") as file:
+        data = {'version': VERSION, 'config': additional_packages}
+
+subprocess.run(["rm", "/usr/share/applications/debian-xterm.desktop", "/usr/share/applications/debian-uxterm.desktop"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
