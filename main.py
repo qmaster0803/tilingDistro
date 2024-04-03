@@ -32,7 +32,7 @@ LOGLEVEL_CRIT = 2
 def log(message, level=LOGLEVEL_INFO):
         print(message)
         if(level == LOGLEVEL_INFO):   logging.info(message)
-        elif(level == LOGLEVEL_WARN): logging.warn(message)
+        elif(level == LOGLEVEL_WARN): logging.warning(message)
         else:                         logging.critical(message)
 
 # Setup logging
