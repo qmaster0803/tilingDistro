@@ -98,8 +98,6 @@ for i,package in enumerate(base_packages):
 print() # to reset progressbar
 logging.info("Base packages installed.")
 
-# Removing xterm
-
 # Step 2. Building some packages from source
 print("This packages must be built from source: polybar, xkb-switch.")
 print("This may take a while, please wait...")
