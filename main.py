@@ -54,18 +54,18 @@ if(os.geteuid() != 0):
         print("This script must be run as root!")
         exit()
 else:
-        Logger.log("TilingDistro v"+VERSION+" install script.")
+        logger.log("TilingDistro v"+VERSION+" install script.")
 
-Logger.log("Checking network connection...")
+logger.log("Checking network connection...")
 ret = subprocess.run(["ping", "-c", "4", "google.com"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if(ret.returncode != 0):
-        Logger.log("This script requires an internet connection.", level=Logger.LOGLEVEL_CRITICAL)
+        logger.log("This script requires an internet connection.", level=logger.LOGLEVEL_CRITICAL)
         exit()
 else:
-        Logger.log("Connection OK.")
+        logger.log("Connection OK.")
 
 username = input("Please enter your username (not root): ")
-Logger.log("Username entered: "+username, level=Logger.HIDDEN_INFO)
+logger.log("Username entered: "+username, level=logger.HIDDEN_INFO)
 
 
 # Check installation method
@@ -74,7 +74,7 @@ if(os.path.exists("/etc/tilingDistro/info.json")): # Update current installation
         if(check_is_newer(latest)):
                 pull_git_repo()
                 import update
-                update.update(username, VERSION)
+                update.update(username, VERSION, logger)
 else: # Install from generic Debian
         import install
-        install.install(username, VERSION)
+        install.install(username, VERSION, logger)
