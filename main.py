@@ -9,7 +9,6 @@
 import os
 import logging
 import subprocess
-import logging
 import urllib.request
 
 def get_latest_version():
@@ -44,28 +43,29 @@ class Logger():
                 elif(level in [self.LOGLEVEL_WARN, self.HIDDEN_WARN]): logging.warning(message)
                 else:                                                  logging.critical(message)
 
+logger = Logger()
+
 # Get VERSION constant from file
 with open("VERSION") as file:
         VERSION = file.read().replace('\n', '')
-
 
 # Preparations. Check root permission and network connection, ask username.
 if(os.geteuid() != 0):
         print("This script must be run as root!")
         exit()
 else:
-        log("TilingDistro v"+VERSION+" install script.")
+        Logger.log("TilingDistro v"+VERSION+" install script.")
 
-log("Checking network connection...")
+Logger.log("Checking network connection...")
 ret = subprocess.run(["ping", "-c", "4", "google.com"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if(ret.returncode != 0):
-        log("This script requires an internet connection.", level=LOGLEVEL_CRITICAL)
+        Logger.log("This script requires an internet connection.", level=Logger.LOGLEVEL_CRITICAL)
         exit()
 else:
-        log("Connection OK.")
+        Logger.log("Connection OK.")
 
 username = input("Please enter your username (not root): ")
-logging.info("Username entered: %s.", username)
+Logger.log("Username entered: "+username, level=Logger.HIDDEN_INFO)
 
 
 # Check installation method
