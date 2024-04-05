@@ -43,6 +43,9 @@ class Logger():
                 elif(level in [self.LOGLEVEL_WARN, self.HIDDEN_WARN]): logging.warning(message)
                 else:                                                  logging.critical(message)
 
+# CD to ensure that we are in correct directory (can be different when run from distro-update command, etc.)
+os.chdir(os.path.dirname(__file__))
+
 logger = Logger()
 
 # Get VERSION constant from file
@@ -75,6 +78,8 @@ if(os.path.exists("/etc/tilingDistro/info.json")): # Update current installation
                 pull_git_repo()
                 import update
                 update.update(username, VERSION, logger)
+        else:
+                print("Already up to date!")
 else: # Install from generic Debian
         import install
         install.install(username, VERSION, logger)
