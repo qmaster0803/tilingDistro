@@ -81,7 +81,7 @@ def install(username, VERSION, Logger):
         # building polybar
         Logger.log("Cloning polybar repo...")
         result = subprocess.run(["git", "clone", "--recursive", "https://github.com/polybar/polybar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if(ret.returncode != 0):
+        if(result.returncode != 0):
                 print(ERR_MESSAGE)
                 Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
                 exit()
@@ -90,19 +90,19 @@ def install(username, VERSION, Logger):
         os.mkdir("build")
         os.chdir("build")
         result = subprocess.run(["cmake", ".."], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if(ret.returncode != 0):
+        if(result.returncode != 0):
                 print(ERR_MESSAGE)
                 Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
                 exit()
         Logger.log("Building polybar... (this may take a few minutes, especially on old machines)")
         result = subprocess.run(["make", "-j", str(os.cpu_count())], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if(ret.returncode != 0):
+        if(result.returncode != 0):
                 print(ERR_MESSAGE)
                 Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
                 exit()
         Logger.log("Installing polybar...")
         result = subprocess.run(["make", "install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if(ret.returncode != 0):
+        if(result.returncode != 0):
                 print(ERR_MESSAGE)
                 Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
                 exit()
@@ -113,7 +113,7 @@ def install(username, VERSION, Logger):
         # building xkb-switch
         Logger.log("Cloning xkb-switch repo...")
         result = subprocess.run(["git", "clone", "--recursive", "https://github.com/grwlf/xkb-switch"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if(ret.returncode != 0):
+        if(result.returncode != 0):
                 print(ERR_MESSAGE)
                 Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
                 exit()
@@ -122,19 +122,19 @@ def install(username, VERSION, Logger):
         os.mkdir("build")
         os.chdir("build")
         result = subprocess.run(["cmake", ".."], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if(ret.returncode != 0):
+        if(result.returncode != 0):
                 print(ERR_MESSAGE)
                 Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
                 exit()
         Logger.log("Building xkb-switch... (this may take a few minutes, especially on old machines)")
         result = subprocess.run(["make", "-j", str(os.cpu_count())], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if(ret.returncode != 0):
+        if(result.returncode != 0):
                 print(ERR_MESSAGE)
                 Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
                 exit()
         Logger.log("Installing xkb-switch...")
         result = subprocess.run(["make", "install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if(ret.returncode != 0):
+        if(result.returncode != 0):
                 print(ERR_MESSAGE)
                 Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
                 exit()
