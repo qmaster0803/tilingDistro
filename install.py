@@ -61,7 +61,7 @@ def install(username, VERSION, Logger):
                 result = subprocess.run(["apt-get", "install", "-y", package], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 Logger.log("Installed "+package+".", level=Logger.HIDDEN_INFO)
                 if(result.returncode != 0):
-                        Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
+                        Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRIT)
                         print() # to reset progressbar
                         print(ERR_MESSAGE)
                         exit()
@@ -83,7 +83,7 @@ def install(username, VERSION, Logger):
         result = subprocess.run(["git", "clone", "--recursive", "https://github.com/polybar/polybar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if(result.returncode != 0):
                 print(ERR_MESSAGE)
-                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
+                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRIT)
                 exit()
         os.chdir("polybar")
         Logger.log("Configuring polybar...")
@@ -92,19 +92,19 @@ def install(username, VERSION, Logger):
         result = subprocess.run(["cmake", ".."], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if(result.returncode != 0):
                 print(ERR_MESSAGE)
-                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
+                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRIT)
                 exit()
         Logger.log("Building polybar... (this may take a few minutes, especially on old machines)")
         result = subprocess.run(["make", "-j", str(os.cpu_count())], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if(result.returncode != 0):
                 print(ERR_MESSAGE)
-                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
+                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRIT)
                 exit()
         Logger.log("Installing polybar...")
         result = subprocess.run(["make", "install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if(result.returncode != 0):
                 print(ERR_MESSAGE)
-                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
+                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRIT)
                 exit()
 
         os.chdir("../../")
@@ -115,7 +115,7 @@ def install(username, VERSION, Logger):
         result = subprocess.run(["git", "clone", "--recursive", "https://github.com/grwlf/xkb-switch"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if(result.returncode != 0):
                 print(ERR_MESSAGE)
-                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
+                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRIT)
                 exit()
         os.chdir("xkb-switch")
         Logger.log("Configuring xkb-switch...")
@@ -124,19 +124,19 @@ def install(username, VERSION, Logger):
         result = subprocess.run(["cmake", ".."], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if(result.returncode != 0):
                 print(ERR_MESSAGE)
-                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
+                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRIT)
                 exit()
         Logger.log("Building xkb-switch... (this may take a few minutes, especially on old machines)")
         result = subprocess.run(["make", "-j", str(os.cpu_count())], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if(result.returncode != 0):
                 print(ERR_MESSAGE)
-                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
+                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRIT)
                 exit()
         Logger.log("Installing xkb-switch...")
         result = subprocess.run(["make", "install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if(result.returncode != 0):
                 print(ERR_MESSAGE)
-                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRITICAL)
+                Logger.log(result.stderr.decode('utf-8'), level=Logger.HIDDEN_CRIT)
                 exit()
 
         os.chdir('../../')
@@ -227,7 +227,7 @@ def install(username, VERSION, Logger):
                         Logger.log("Installing "+package_name+" package...")
                         result = subprocess.run(["apt-get", "install", "-y", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         if(result.returncode != 0):
-                                Logger.log(ERR_MESSAGE, level=LOGLEVEL_CRITICAL)
+                                Logger.log(ERR_MESSAGE, level=LOGLEVEL_CRIT)
                                 exit()
 
         # Step 5. Configuring monitors
