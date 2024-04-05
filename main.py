@@ -9,6 +9,7 @@
 import os
 import logging
 import subprocess
+import logging
 import urllib.request
 
 def get_latest_version():
@@ -25,23 +26,28 @@ def check_is_newer(version_to_check):
 def pull_git_repo():
         subprocess.run(["git", "pull"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
+class Logger():
+        LOGLEVEL_INFO = 0
+        LOGLEVEL_WARN = 1
+        LOGLEVEL_CRIT = 2
+        
+        HIDDEN_INFO = 3
+        HIDDEN_WARN = 4
+        HIDDEN_CRIT = 5
+        def __init__(self):
+                logging.basicConfig(format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO, filename="tilingDistroInstall.log")
+                
+        def log(self, message, level=LOGLEVEL_INFO):
+                if(level not in [self.HIDDEN_INFO, self.HIDDEN_WARN, self.HIDDEN_CRIT]): print(message)
+                        
+                if(level in [self.LOGLEVEL_INFO, self.HIDDEN_INFO]):   logging.info(message)
+                elif(level in [self.LOGLEVEL_WARN, self.HIDDEN_WARN]): logging.warning(message)
+                else:                                                  logging.critical(message)
 
 # Get VERSION constant from file
 with open("VERSION") as file:
-        VERSION = file.read()
+        VERSION = file.read().replace('\n', '')
 
-# levels:
-LOGLEVEL_INFO = 0
-LOGLEVEL_WARN = 1
-LOGLEVEL_CRIT = 2
-def log(message, level=LOGLEVEL_INFO):
-        print(message)
-        if(level == LOGLEVEL_INFO):   logging.info(message)
-        elif(level == LOGLEVEL_WARN): logging.warning(message)
-        else:                         logging.critical(message)
-
-# Setup logging
-logging.basicConfig(format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO, filename="tilingDistroInstall.log")
 
 # Preparations. Check root permission and network connection, ask username.
 if(os.geteuid() != 0):
@@ -68,5 +74,7 @@ if(os.path.exists("/etc/tilingDistro/info.json")): # Update current installation
         if(check_is_newer(latest)):
                 pull_git_repo()
                 import update
+                update.update(username, VERSION)
 else: # Install from generic Debian
         import install
+        install.install(username, VERSION)
