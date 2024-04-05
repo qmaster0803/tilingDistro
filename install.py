@@ -358,7 +358,7 @@ def install(username, VERSION, Logger):
                 json.dump(data, file)
 
         shutil.copy(os.path.join(os.path.dirname(__file__), "scripts/distro-update.sh"), "/etc/tilingDistro/distro-update.sh")
-        os.chmod("/home/"+username+"/Software/install-helix.sh", 0o755)
+        os.chmod("/etc/tilingDistro/distro-update.sh", 0o755)
         shutil.copy(os.path.join(os.path.dirname(__file__), "scripts/distro-update.py"), "/etc/tilingDistro/distro-update.py")
         subprocess.run(["update-alternatives", "--install", "/usr/bin/distro-update", "distro-update", "/etc/tilingDistro/distro-update.sh", "100"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
