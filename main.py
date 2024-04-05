@@ -13,12 +13,12 @@ import urllib.request
 
 def get_latest_version():
         page = urllib.request.urlopen("https://raw.githubusercontent.com/qmaster0803/tilingDistro/master/VERSION")
-        return page.read()
+        return page.read().decode("utf-8")
 
 def check_is_newer(version_to_check):
         global VERSION
-        curr_split  = list(map(int, VERSION[1:].split('.')))
-        check_split = list(map(int, version_to_check[1:].split('.')))
+        curr_split  = list(map(int, VERSION.split('.')))
+        check_split = list(map(int, version_to_check.split('.')))
 
         return curr_split < check_split
 
