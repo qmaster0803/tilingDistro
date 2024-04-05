@@ -1,16 +1,13 @@
-# Install Rust compiler
-wget https://sh.rustup.rs -O rustup.sh
-bash rustup.sh -y
-rm rustup.sh
+# Download tar and extracr
+mkdir -p $HOME/Software
+cd $HOME/Software
+wget "https://github.com/helix-editor/helix/releases/download/24.03/helix-24.03-x86_64-linux.tar.xz"
+tar xf helix-24.03-x86_64-linux.tar.xz
+rm helix-24.03-x86_64-linux.tar.xz
 
-# Reload terminal
-source ~/.zshrc
+mv helix-24.03-x86_64-linux helix-24.03
+cd helix-24.03
 
-# Install Helix
-git clone https://github.com/helix-editor/helix
-cd helix
-cargo install --path helix-term --locked
-
-# Fetch and compile Helix grammar
-hx --grammar fetch
-hx --grammar build
+# Link helix/runtime to ~/.config/helix/runtime
+mkdir -p $HOME/.config/helix
+ln -s $HOME/Software/helix-24.03-x86_64-linux.tar.xz/runtime $HOME/.config/helix/

@@ -371,8 +371,7 @@ if("Helix" in selected):
         os.chmod("/home/"+username+"/Software/install-helix.sh", 0o777)                                                                          # allow execution
         subprocess.run(["/usr/sbin/runuser", "-u", username, "zsh", "install-helix.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["rm", "install-helix.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.run(["chown", "--recursive", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid), "/home/"+username+"/Software/helix"],
-                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["update-alternatives", "--install", "/usr/bin/hx", "hx", "/home/"+username+"/Software/helix-24.03/hx", "100"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Emacs" in selected):
         log("Installing emacs...")
         subprocess.run(["apt-get", "install", "-y", "emacs"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
