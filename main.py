@@ -364,7 +364,7 @@ if("Sublime text 4" in selected):
         subprocess.run(["apt-get", "install", "-y", "sublime-text_build-4169_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["rm", "sublime-text_build-4169_amd64.deb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if("Helix" in selected):
-        log("Building and installing Helix... (This may take a while)")
+        log("Installing Helix...")
         os.chdir("/home/"+username+"/Software")
         subprocess.run(["apt-get", "install", "-y", "git", "python3-pylsp", "clangd"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         shutil.copy(os.path.join(os.path.dirname(__file__), "scripts/install-helix.sh"), "/home/"+username+"/Software/install-helix.sh")
