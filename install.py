@@ -167,6 +167,10 @@ def install(username, VERSION, Logger):
                         "/home/"+username+"/.xinitrc"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)                 # set owner
         os.chmod("/home/"+username+"/.xinitrc", 0o755)                                                                        # allow execution
 
+        shutil.copy(os.path.join(os.path.dirname(__file__), "default_configs/zprofile"), "/home/"+username+"/.zprofile")      # copy default zprofile
+        subprocess.run(["chown", str(pwd.getpwnam(username).pw_uid)+":"+str(pwd.getpwnam(username).pw_gid),
+                        "/home/"+username+"/.zprofile"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)                # set owner
+        os.chmod("/home/"+username+"/.zprofile", 0o755)                                                                       # allow execution
 
         if(not os.path.exists("/home/"+username+"/.config/")):
                 os.mkdir("/home/"+username+"/.config/")
@@ -350,8 +354,13 @@ def install(username, VERSION, Logger):
         if(not os.path.exists("/etc/tilingDistro")):
                 os.mkdir("/etc/tilingDistro")
         with open("/etc/tilingDistro/info.json", "w") as file:
-                data = {'version': VERSION, 'config': selected}
+                data = {'version': VERSION, 'config': selected, 'path_to_repo': os.path.dirname(__file__)}
                 json.dump(data, file)
+
+        shutil.copy(os.path.join(os.path.dirname(__file__), "scripts/distro-update.sh"), "/etc/tilingDistro/distro-update.sh")
+        os.chmod("/home/"+username+"/Software/install-helix.sh", 0o755)
+        shutil.copy(os.path.join(os.path.dirname(__file__), "scripts/distro-update.py"), "/etc/tilingDistro/distro-update.py")
+        subprocess.run(["update-alternatives", "--install", "/usr/bin/distro-update", "distro-update", "/etc/tilingDistro/distro-update.sh", "100"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         subprocess.run(["rm", "/usr/share/applications/debian-xterm.desktop", "/usr/share/applications/debian-uxterm.desktop"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -365,4 +374,4 @@ def install(username, VERSION, Logger):
         print("-"*50)
         input("Press enter to reboot")
 
-        subprocess.run(["rm", "/usr/share/applications/debian-xterm.desktop", "/usr/share/applications/debian-uxterm.desktop"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["systemctl", "reboot"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

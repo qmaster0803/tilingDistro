@@ -1,0 +1,6 @@
+# Start X on login
+if [[ -z $DISPLAY ]]; then
+  if read -q -s "?Start X [y/N]?"; then
+    exec startx
+  fi
+fi
