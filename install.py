@@ -53,7 +53,7 @@ def install(username, VERSION, Logger):
                          'build-essential', 'cmake', 'libxkbfile-dev', 'flameshot', 'network-manager', 'net-tools', 'dunst', 'light', 'git', 'cmake-data', 'pkg-config', 'python3-sphinx',
                          'python3-packaging', 'libuv1-dev', 'libcairo2-dev', 'libxcb1-dev', 'libxcb-util0-dev', 'libxcb-randr0-dev', 'libxcb-composite0-dev', 'python3-xcbgen', 'xcb-proto',
                          'libxcb-image0-dev', 'libxcb-ewmh-dev', 'libxcb-icccm4-dev', 'libxcb-xkb-dev', 'libxcb-xrm-dev', 'libxcb-cursor-dev', 'libasound2-dev', 'libpulse-dev',
-                         'libmpdclient-dev', 'libnl-genl-3-dev', 'nvidia-detect', 'python3-pip', 'libnotify-bin', 'fonts-font-awesome']
+                         'libmpdclient-dev', 'libnl-genl-3-dev', 'nvidia-detect', 'python3-pip', 'libnotify-bin', 'fonts-font-awesome', 'arandr', 'nautilus', 'pavucontrol']
 
         Logger.log("Installing base packages...", level=Logger.HIDDEN_INFO)
         for i,package in enumerate(base_packages):
@@ -307,7 +307,7 @@ def install(username, VERSION, Logger):
                 subprocess.run(["flatpak", "remote-add", "--if-not-exists", "flathub", "https://dl.flathub.org/repo/flathub.flatpakrepo"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if("Helvum" in selected):
                 Logger.log("Installing Helvum...")
-                subprocess.run(["flatpak", "install", "flathub", "org.pipewire.Helvum"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run(["flatpak", "install", "-y", "flathub", "org.pipewire.Helvum"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if("Transmission" in selected):
                 Logger.log("Installing Transmission...")
                 subprocess.run(["apt-get", "install", "-y", "transmission-gtk"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
