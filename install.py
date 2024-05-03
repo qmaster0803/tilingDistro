@@ -268,7 +268,7 @@ def install(username, VERSION, Logger):
                 subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "scripts/firefox-install.sh")], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if("LibreOffice" in selected):
                 Logger.log("Installing LibreOffice...")
-                subprocess.run(["apt-get", "install", "-y", "libreoffice"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run(["apt-get", "install", "-y", "libreoffice", "libreoffice-gnome"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if("VLC Media Player" in selected):
                 Logger.log("Installing VLC Media Player...")
                 subprocess.run(["apt-get", "install", "-y", "vlc"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
